@@ -49,12 +49,6 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="pt-2">
-                    <b>Đường dẫn gốc</b>
-                    <div class="input-group mb-3">
-                        <input id="i-original_link" name="original_link" type="text" value="https://www.google.com" class="form-control" disabled>
-                    </div>
-                </div>
 
                 <div class="pt-2">
                     <b>Đường dẫn rút gọn</b>
@@ -128,6 +122,13 @@
 
         $('#btn-save').on('click',function() {
             let file = document.getElementById('i-file').files[0]
+            let short_link = $('#i-short_link').val()
+            if ($('#i-switch').prop('checked') === true) {
+                file = null
+            } else {
+                short_link = null
+            }
+
             let original_link = $('#i-original_link').val()
             let short_link_name = $('#i-short_link_name').val()
             let is_redirect_directly = $('#i-is_redirect_directly').prop('checked')
@@ -137,6 +138,7 @@
             const formData = new FormData()
             formData.append('_token', '{{ csrf_token() }}')
             formData.append('file', file)
+            formData.append('short_link', short_link)
             formData.append('original_link', original_link)
             formData.append('short_link_name', short_link_name)
             formData.append('expired_at', expired_at)
@@ -156,24 +158,6 @@
                     console.log(data)
                 }
             })
-
-
-
-            {{--$.ajax({--}}
-            {{--    type: 'POST',--}}
-            {{--    url: '{{ route('link.store') }}',--}}
-            {{--    dataType: 'json',--}}
-            {{--    data: {--}}
-            {{--        '_token' : '{{ csrf_token() }}'--}}
-
-            {{--    },--}}
-            {{--    success:function(data) {--}}
-            {{--        console.log(data)--}}
-            {{--    },--}}
-            {{--    error:function (data) {--}}
-            {{--        console.log(data)--}}
-            {{--    }--}}
-            {{--})--}}
         })
     })
 
