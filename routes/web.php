@@ -1,17 +1,22 @@
 <?php
 
+use App\Http\Controllers\LinkController;
 use Illuminate\Support\Facades\Route;
 
 /*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
+
+chuc nang upload file
+
+
 */
+Route::get('/test', function () {
+    return redirect()->to('https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_dark_1x_r5.png');
+})->name('test');
+
+Route::group(['prefix' => 'links', 'as' => 'link.'], static function () {
+    Route::get('/', [LinkController::class, 'index'])->name('index');
+    Route::get('/store', [LinkController::class, 'store'])->name('store');
+});
 
 Route::get('/', function () {
     return view('welcome');
