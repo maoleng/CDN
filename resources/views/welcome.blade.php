@@ -17,7 +17,7 @@
 </div>
 <br>
 <div id="d-upload">
-    <input class="toggle drop-here" type="file" title="" >
+    <input id="i-file" name="file" class="toggle drop-here" type="file" title="" >
     <div class="toggle text text-drop">Kéo thả vào đây</div>
     <div class="toggle text text-upload">Đang tải lên</div>
     <svg class="toggle progress-wrapper" width="300" height="300">
@@ -52,7 +52,7 @@
                 <div class="pt-2">
                     <b>Đường dẫn gốc</b>
                     <div class="input-group mb-3">
-                        <input type="text" value="https://www.google.com" class="form-control" disabled>
+                        <input id="i-original_link" name="original_link" type="text" value="https://www.google.com" class="form-control" disabled>
                     </div>
                 </div>
 
@@ -60,81 +60,52 @@
                     <b>Đường dẫn rút gọn</b>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon3">https://ktrx.cc/</span>
+                            <span class="input-group-text">https://ktrx.cc/</span>
                         </div>
-                        <input type="text" class="form-control" placeholder="concacloinhoi">
+                        <input id="i-short_link_name" name="short_link_name" value="{{ \Str::random(10) }}" type="text" class="form-control" placeholder="concacloinhoi">
                     </div>
                 </div>
 
                 <div class="pt-2">
                     <b>Hết hạn sau</b>
-                    <div class="custom-control custom-radio">
-                        <input checked type="radio" id="customRadio1" name="customRadio" class="custom-control-input">
-                        <label class="custom-control-label" for="customRadio1">1 tháng</label>
-                    </div>
-                    <div class="custom-control custom-radio">
-                        <input type="radio" id="customRadio2" name="customRadio" class="custom-control-input">
-                        <label class="custom-control-label" for="customRadio2">6 tháng</label>
-                    </div>
-                    <div class="custom-control custom-radio">
-                        <input type="radio" id="customRadio3" name="customRadio" class="custom-control-input">
-                        <label class="custom-control-label" for="customRadio3">1 năm</label>
-                    </div>
-                    <div class="custom-control custom-radio">
-                        <input type="radio" id="customRadio4" name="customRadio" class="custom-control-input">
-                        <label class="custom-control-label" for="customRadio4">Vĩnh viễn</label>
+                    <div class="input-group mb-3">
+                        <input id="i-expired_at" name="expired_at" type="number" value="0" class="form-control" placeholder="Nhập vào ngày tồn tại, để 0 nếu muốn tồn tại vĩnh viễn">
+                        <div class="input-group-append">
+                            <span class="input-group-text">ngày</span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="pt-2">
                     <b>Link điều hướng trực tiếp tới nội dung</b>
                     <div class="custom-control custom-checkbox my-1 mr-sm-2">
-                        <input type="checkbox" checked class="custom-control-input" id="redirect-link">
-                        <label class="custom-control-label" for="redirect-link">Thông qua 1 trang</label>
+                        <input type="checkbox" name="is_redirect_directly" class="custom-control-input" id="i-is_redirect_directly">
+                        <label class="custom-control-label" for="i-is_redirect_directly">Thông qua 1 trang</label>
                     </div>
                 </div>
 
                 <div class="pt-2">
-                    <b class="e-password">Mật khẩu</b>
-                    <div class="input-group mb-3 e-password">
-                        <input  type="text" class="form-control" placeholder="Mật khẩu nếu có">
+                    <b class="e-password" style="display: none">Mật khẩu</b>
+                    <div class="input-group mb-3 e-password" style="display: none">
+                        <input id="i-password" name="password" type="text" class="form-control" placeholder="Mật khẩu nếu có">
                     </div>
                 </div>
 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-primary">Lưu</button>
+                <button id="btn-save" type="button" class="btn btn-primary">Lưu</button>
             </div>
         </div>
     </div>
 </div>
 
-
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function() {
-        $('#modal-link_config').modal('show')
-
-        $('#d-upload').css('--background', '#fff')
-        $('#i-switch').on('click', function() {
-            $('.toggle').toggle()
-            let upload = $('#d-upload')
-            let cur_color = upload.css('--background')
-
-            cur_color === '#fff' ?
-                upload.css('--background', '#e8ebf3') :
-                upload.css('--background', '#fff')
-        })
-        $('#redirect-link').on('click', function() {
-            $('.e-password').toggle()
-        })
-        $('#i-short_link').keypress(function (e) {
-            if (e.which === 13) {
-                $('#modal-link_config').modal('show')
-            }
-        })
+        pageStart()
 
         const fileUpload = document.querySelector("#d-upload");
         fileUpload.addEventListener("dragover", function() {
@@ -152,9 +123,82 @@
             setTimeout(function () {
                 fileUpload.classList.add("done")
                 $('#modal-link_config').modal('show')
-            }, 3000)
+            }, 300)
         }
+
+        $('#btn-save').on('click',function() {
+            let file = document.getElementById('i-file').files[0]
+            let original_link = $('#i-original_link').val()
+            let short_link_name = $('#i-short_link_name').val()
+            let is_redirect_directly = $('#i-is_redirect_directly').prop('checked')
+            let password = $('#i-password').val()
+            let expired_at = $('#i-expired_at').val()
+
+            const formData = new FormData()
+            formData.append('_token', '{{ csrf_token() }}')
+            formData.append('file', file)
+            formData.append('original_link', original_link)
+            formData.append('short_link_name', short_link_name)
+            formData.append('expired_at', expired_at)
+            formData.append('is_redirect_directly', is_redirect_directly)
+            formData.append('password', password)
+
+            $.ajax({
+                type: 'POST',
+                url: '{{ route('link.store') }}',
+                processData: false,
+                contentType: false,
+                data: formData,
+                success:function(data) {
+                    console.log(data)
+                },
+                error:function (data) {
+                    console.log(data)
+                }
+            })
+
+
+
+            {{--$.ajax({--}}
+            {{--    type: 'POST',--}}
+            {{--    url: '{{ route('link.store') }}',--}}
+            {{--    dataType: 'json',--}}
+            {{--    data: {--}}
+            {{--        '_token' : '{{ csrf_token() }}'--}}
+
+            {{--    },--}}
+            {{--    success:function(data) {--}}
+            {{--        console.log(data)--}}
+            {{--    },--}}
+            {{--    error:function (data) {--}}
+            {{--        console.log(data)--}}
+            {{--    }--}}
+            {{--})--}}
+        })
     })
+
+    function pageStart()
+    {
+        $('#modal-link_config').modal('show')
+        $('#d-upload').css('--background', '#fff')
+        $('#i-switch').on('click', function() {
+            $('.toggle').toggle()
+            let upload = $('#d-upload')
+            let cur_color = upload.css('--background')
+
+            cur_color === '#fff' ?
+                upload.css('--background', '#e8ebf3') :
+                upload.css('--background', '#fff')
+        })
+        $('#i-is_redirect_directly').on('click', function() {
+            $('.e-password').toggle()
+        })
+        $('#i-short_link').keypress(function (e) {
+            if (e.which === 13) {
+                $('#modal-link_config').modal('show')
+            }
+        })
+    }
 
 
 </script>

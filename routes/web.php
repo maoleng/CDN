@@ -15,7 +15,7 @@ Route::get('/test', function () {
 
 Route::group(['prefix' => 'links', 'as' => 'link.'], static function () {
     Route::get('/', [LinkController::class, 'index'])->name('index');
-    Route::get('/store', [LinkController::class, 'store'])->name('store');
+    Route::post('/store', [LinkController::class, 'store'])->name('store');
 });
 
 Route::get('/', function () {
