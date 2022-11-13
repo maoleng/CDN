@@ -5,7 +5,7 @@ use App\Models\Link;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['domain' => 'cdn.cdn.test'], static function () {
+Route::group(['domain' => env('SUB_DOMAIN')], static function () {
     Route::get('/', static function () {
         return view('welcome');
     });
@@ -15,7 +15,7 @@ Route::group(['domain' => 'cdn.cdn.test'], static function () {
     });
 });
 
-Route::group(['domain' => 'cdn.test'], static function () {
+Route::group(['domain' => env('ROOT_DOMAIN')], static function () {
     Route::get('/', static function () {
         return redirect()->to('https://facebook.com/maoleng.bhl');
     });
