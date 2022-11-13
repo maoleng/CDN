@@ -35,3 +35,13 @@
 
 <meta property="article:author" content="https://www.facebook.com/maoleng.bhl" />
 <meta property="article:publisher" content="https://www.facebook.com/maolengg" />
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E5FBKNFZQ7"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-E5FBKNFZQ7');
+</script>
