@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+<link rel="icon" href="https://maoleng.dev/assets/img/icon.jpg">
 <meta name="title" content="SKRT SKRTTT" />
 <meta name="description" content="SKRT SKRTTT" />
 <link rel="canonical" href="{{ env('APP_URL') }}" />
