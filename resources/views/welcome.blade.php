@@ -13,7 +13,7 @@
 </div>
 <br>
 <div class="input-group mb-3" style="height: 50px;width: 500px">
-    <input id="i-short_link" style="display: none" type="text" class="form-control toggle" placeholder="Nhập link cần rút gọn">
+    <input id="i-link_to_compact" style="display: none" type="text" class="form-control toggle" placeholder="Nhập link cần rút gọn">
 </div>
 <br>
 <div id="d-upload">
@@ -56,7 +56,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">https://ktrx.cc/</span>
                         </div>
-                        <input id="i-short_link_name" name="short_link_name" value="{{ \Str::random(10) }}" type="text" class="form-control" placeholder="concacloinhoi">
+                        <input id="i-compacted_link" name="compacted_link" type="text" class="form-control" placeholder="Để trống để tạo ngẫu nhiên">
                     </div>
                 </div>
 
@@ -97,6 +97,7 @@
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="{{asset('script/device-uuid.js')}}"></script>
 <script>
     $(document).ready(function() {
         pageStart()
@@ -121,29 +122,31 @@
         }
 
         $('#btn-save').on('click',function() {
+
+
             let file = document.getElementById('i-file').files[0]
-            let short_link = $('#i-short_link').val()
+            let link_to_compact = $('#i-link_to_compact').val()
             if ($('#i-switch').prop('checked') === true) {
                 file = null
             } else {
-                short_link = null
+                link_to_compact = null
             }
 
-            let original_link = $('#i-original_link').val()
-            let short_link_name = $('#i-short_link_name').val()
+            let compacted_link = $('#i-compacted_link').val()
             let is_redirect_directly = $('#i-is_redirect_directly').prop('checked')
             let password = $('#i-password').val()
             let expired_at = $('#i-expired_at').val()
+            let device_uuid = new DeviceUUID().get()
 
             const formData = new FormData()
             formData.append('_token', '{{ csrf_token() }}')
             formData.append('file', file)
-            formData.append('short_link', short_link)
-            formData.append('original_link', original_link)
-            formData.append('short_link_name', short_link_name)
+            formData.append('link_to_compact', link_to_compact)
+            formData.append('compacted_link', compacted_link)
             formData.append('expired_at', expired_at)
             formData.append('is_redirect_directly', is_redirect_directly)
             formData.append('password', password)
+            formData.append('device_uuid', device_uuid)
 
             $.ajax({
                 type: 'POST',
@@ -177,7 +180,7 @@
         $('#i-is_redirect_directly').on('click', function() {
             $('.e-password').toggle()
         })
-        $('#i-short_link').keypress(function (e) {
+        $('#i-link_to_compact').keypress(function (e) {
             if (e.which === 13) {
                 $('#modal-link_config').modal('show')
             }
