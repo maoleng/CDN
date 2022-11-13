@@ -16,6 +16,9 @@ Route::group(['domain' => 'cdn.cdn.test'], static function () {
 });
 
 Route::group(['domain' => 'cdn.test'], static function () {
+    Route::get('/', static function () {
+        return redirect()->to('https://facebook.com/maoleng.bhl');
+    });
     Route::get('/{name}', static function ($name) {
         $link = Link::query()->where('compacted_link', $name)->first();
 
