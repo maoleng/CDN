@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('links', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('compacted_link', 250);
+            $table->string('compacted_link', 250)->unique();
             $table->datetime('expired_at');
             $table->boolean('is_redirect_directly')->default(true);
             $table->uuid('cdn_id');

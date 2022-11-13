@@ -3,18 +3,17 @@
 namespace App\Http\Requests;
 
 use Carbon\Carbon;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
+use JetBrains\PhpStorm\ArrayShape;
 
-class StoreLinkRequest extends FormRequest
+class StoreLinkRequest extends BaseRequest
 {
 
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    public function rules()
+    #[ArrayShape([
+        'file' => "string[]", 'link_to_compact' => "array", 'compacted_link' => "string[]", 'expired_at' => "string[]",
+        'is_redirect_directly' => "string[]", 'password' => "string[]", 'device_uuid' => "string[]"
+    ])]
+    public function rules(): array
     {
         return [
             'file' => [
@@ -34,6 +33,7 @@ class StoreLinkRequest extends FormRequest
                 'regex:/[A-Za-z0-9_\-\.]+/',
                 'min:3',
                 'max:100',
+                'unique:links,compacted_link',
             ],
             'expired_at' => [
                 'nullable',

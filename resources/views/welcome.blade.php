@@ -94,6 +94,26 @@
     </div>
 </div>
 
+<div class="modal fade" id="modal-notification" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-notification-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span id="modal-notification-body"></span>
+            </div>
+            <div class="modal-footer">
+{{--                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>--}}
+                <button id="modal-notification-btn_copy" type="button" class="btn btn-primary">Copy</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -122,8 +142,6 @@
         }
 
         $('#btn-save').on('click',function() {
-
-
             let file = document.getElementById('i-file').files[0]
             let link_to_compact = $('#i-link_to_compact').val()
             if ($('#i-switch').prop('checked') === true) {
@@ -155,18 +173,27 @@
                 contentType: false,
                 data: formData,
                 success:function(data) {
-                    console.log(data)
+                    $('#modal-link_config').modal('toggle')
+                    let title = data.status === true ? 'Thành công' : 'Thất bại'
+                    $('#modal-notification-title').text(title)
+                    $('#modal-notification-body').text(data.message)
+                    $('#modal-notification').modal('toggle')
                 },
                 error:function (data) {
-                    console.log(data)
+                    alert(data)
                 }
             })
         })
+
+        $('#modal-notification-btn_copy').on('click', function () {
+            let message = $('#modal-notification-body').text()
+            navigator.clipboard.writeText(message)
+        })
+
     })
 
     function pageStart()
     {
-        $('#modal-link_config').modal('show')
         $('#d-upload').css('--background', '#fff')
         $('#i-switch').on('click', function() {
             $('.toggle').toggle()
