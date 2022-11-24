@@ -19,12 +19,16 @@ class LinkController extends Controller
 
     public function store(StoreLinkRequest $request): array
     {
-        $data = $request->validated();
+        $data = $request->all();
         if (isset($data['file'])) {
             $file = $this->uploadFile($data['file'], $data['device_uuid']);
             $url = $this->createCompactLink($file, $data);
         } else {
-            $compact = ['source' => $data['link_to_compact'], 'size' => null];
+            if (isset($data['text_to_compact']['url'])) {
+                $compact = ['source' => $data['text_to_compact']['url'], 'size' => null];
+            } else {
+                $compact = $this->uploadText($data['text_to_compact'], $data['device_uuid']);
+            }
             $url = $this->createCompactLink($compact, $data);
         }
 
@@ -59,6 +63,22 @@ class LinkController extends Controller
         }
 
         return $link->url;
+    }
+
+    private function uploadText($text_to_compact, $device_uuid)
+    {
+        $file_name = Str::random(25).'.'.$text_to_compact['file_type'];
+        if (authed() === null) {
+            $path = 'guests/'.$device_uuid.'/'.$file_name;
+        } else {
+            $path = 'users/'.authed()->id.'/'.$file_name;
+        }
+        Storage::disk('s3')->put($path, $text_to_compact['text']);
+
+        return [
+            'source' => $path,
+            'size' => strlen($text_to_compact['text']) / 1000, // kilobyte
+        ];
     }
 
     #[ArrayShape(['source' => "string", 'size' => "mixed"])]

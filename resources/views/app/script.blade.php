@@ -27,11 +27,11 @@
 
         $('#btn-save').on('click',function() {
             let file = document.getElementById('i-file').files[0]
-            let link_to_compact = $('#i-link_to_compact').val()
+            let text_to_compact = $('#i-text_to_compact').val()
             if ($('#i-switch').prop('checked') === true) {
                 file = null
             } else {
-                link_to_compact = null
+                text_to_compact = null
             }
 
             let compacted_link = $('#i-compacted_link').val()
@@ -43,7 +43,7 @@
             const formData = new FormData()
             formData.append('_token', '{{ csrf_token() }}')
             formData.append('file', file)
-            formData.append('link_to_compact', link_to_compact)
+            formData.append('text_to_compact', text_to_compact)
             formData.append('compacted_link', compacted_link)
             formData.append('expired_at', expired_at)
             formData.append('is_redirect_directly', is_redirect_directly)
@@ -91,8 +91,8 @@
         $('#i-is_redirect_directly').on('click', function() {
             $('.e-password').toggle()
         })
-        $('#i-link_to_compact').keypress(function (e) {
-            if (e.which === 13) {
+        $('#i-text_to_compact').keypress(function (e) {
+            if ((e.keyCode === 10 || e.keyCode === 13) && e.ctrlKey) {
                 @if (authed() !== null)
                 $('#modal-link_config').modal('show')
                 @else

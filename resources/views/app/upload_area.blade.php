@@ -3,7 +3,7 @@
 </div>
 <br>
 <div class="input-group mb-3" style="height: 50px;width: 500px">
-    <input id="i-link_to_compact" style="display: none" type="text" class="form-control toggle" placeholder="Nhập link cần rút gọn">
+    <textarea id="i-text_to_compact" style="display: none" class="form-control toggle">Nhập vào link cần rút gọn hoặc 1 đoạn văn bản</textarea>
 </div>
 <br>
 <div id="d-upload">

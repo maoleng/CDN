@@ -10,17 +10,17 @@ class StoreLinkRequest extends BaseRequest
 {
 
     #[ArrayShape([
-        'file' => "string[]", 'link_to_compact' => "array", 'compacted_link' => "string[]", 'expired_at' => "string[]",
+        'file' => "string[]", 'text_to_compact' => "array", 'compacted_link' => "string[]", 'expired_at' => "string[]",
         'is_redirect_directly' => "string[]", 'password' => "string[]", 'device_uuid' => "string[]"
     ])]
     public function rules(): array
     {
         return [
             'file' => [
-                'required_without:link_to_compact',
+                'required_without:text_to_compact',
                 'max:512000000',
             ],
-            'link_to_compact' => [
+            'text_to_compact' => [
                 'required_without:file',
                 function ($attribute, $value, $fail) {
                     if (isset($value, $this->file)) {
@@ -55,7 +55,26 @@ class StoreLinkRequest extends BaseRequest
     public function prepareForValidation(): void
     {
         $file = $this->get('file') === 'null' ? null : $this->get('file');
-        $link_to_compact = $this->get('link_to_compact') === 'null' ? null : $this->get('link_to_compact');
+        $text_to_compact = $this->get('text_to_compact') === 'null' ? null : $this->get('text_to_compact');
+        if (isset($text_to_compact)) {
+            $str_regex_url = '/^(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})$/';
+            preg_match($str_regex_url, $text_to_compact, $match);
+            if (isset($match[0])) {
+                $file_type = null;
+                $text = null;
+                $url = $text_to_compact;
+            } else {
+                $url = null;
+                preg_match('/^{{\w+}}/', $text_to_compact, $match);
+                if (isset($match[0])) {
+                    $file_type = substr($match[0], 2, -2);
+                    $text = str_replace($match[0], '', $text_to_compact);
+                } else {
+                    $file_type = 'txt';
+                    $text = $text_to_compact;
+                }
+            }
+        }
         $expired_at = (int) $this->get('expired_at');
         $expired_at = ($expired_at === 0 || $expired_at < 0) ?
             Carbon::now()->year(3000) :
@@ -73,7 +92,12 @@ class StoreLinkRequest extends BaseRequest
 
         $this->merge([
             'file' => $file,
-            'link_to_compact' => $link_to_compact,
+            'text_to_compact' => [
+                'url' => $url ?? null,
+                'text' => $text ?? null,
+                'file_type' => $file_type ?? null,
+            ],
+            'wtf' => $text_to_compact,
             'is_redirect_directly' => $is_redirect_directly,
             'expired_at' => $expired_at,
             'password' => $password,
